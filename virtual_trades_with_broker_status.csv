@@ -1,0 +1,2 @@
+Timestamp,Symbol,Signal,Entry Price,Stop Loss,Target,ATR,Setup_Type,Broker_Status
+2026-10-05 01:53:29,NIFTY,BUY,22421.95,22401.5,22462.86,13.64,NORMAL_STRONG,Order_Attempted_Insufficient_Funds_Or_Test

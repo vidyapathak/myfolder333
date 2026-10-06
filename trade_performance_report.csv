@@ -1,0 +1,2 @@
+Timestamp,Symbol,Signal,Entry Price,Stop Loss,Target,ATR,Setup_Type,Outcome,Max_Profit_Pct,Exit_Price
+2026-10-01T15:14:00+05:30,NIFTY,BUY,22445.6,22426.33,22484.14,12.85,NORMAL_STRONG,STOP_LOSS_HIT,0.0,22426.33
