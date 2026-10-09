@@ -14,10 +14,9 @@ import requests
 
 
 def send_whatsapp(message):
-  account_sid = 'AC3a2a1efbd6aa8126995ca1db72034019'
-  auth_token = 'a9dd4076ad7a4da56d78aa3d64065d1d'
-
-  url = f'https://api.twilio.org/2010-04-01/Accounts/{account_sid}/Messages.json'
+  account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+  url = f'https://api.twilio.com/2010-04-01/Accounts/{account_sid}/Messages.json'
 
   payload = {
       'From': 'whatsapp:+17372508034',
