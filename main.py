@@ -1,6 +1,10 @@
 import os
 import requests
 from datetime import datetime, timezone, timedelta
+from dotenv import load_dotenv
+
+# .env file se variables load karein
+load_dotenv()
 
 # 1. India Timezone (IST = UTC + 5:30) set karein
 ist_timezone = timezone(timedelta(hours=5, minutes=30))
@@ -34,20 +38,17 @@ def is_market_open():
     market_start = datetime.strptime("09:15:00", "%H:%M:%S").time()
     market_end = datetime.strptime("15:30:00", "%H:%M:%S").time()
     
-    # Check karein ki current time market hours ke andar hai ya nahi
     return market_start <= current_time <= market_end
 
 # --- Test Execution ---
 if __name__ == "__main__":
     print("Script execution started...")
     
-    # Check Market Status
     if is_market_open():
         print("Market is OPEN!")
     else:
         print("Market is CLOSED!")
     
-    # Send Test WhatsApp Alert
     res = send_whatsapp("Test message: Trading Bot is Working!")
     if res is not None:
         print("Status Code:", res.status_code)
