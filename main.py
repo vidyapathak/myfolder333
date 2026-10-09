@@ -1,55 +1,44 @@
-import os
-import requests
-from datetime import datetime, timezone, timedelta
-from dotenv import load_dotenv
+import yfinance as yf
 
-# .env file se variables load karein
-load_dotenv()
-
-# 1. India Timezone (IST = UTC + 5:30) set karein
-ist_timezone = timezone(timedelta(hours=5, minutes=30))
-
-# --- WhatsApp Function ---
-def send_whatsapp(message):
-    try:
-        account_sid = os.getenv('TWILIO_ACCOUNT_SID')
-        auth_token = os.getenv('TWILIO_AUTH_TOKEN')
-        
-        url = f'https://api.twilio.com/2010-04-01/Accounts/{account_sid}/Messages.json'
-        
-        payload = {
-            'From': 'whatsapp:+17372508034',
-            'To': 'whatsapp:+919303520446',
-            'Body': message
-        }
-        
-        response = requests.post(url, data=payload, auth=(account_sid, auth_token))
-        return response
-    except Exception as e:
-        print(f"WhatsApp Error: {e}")
-        return None
-
-# --- Market Status Function ---
-def is_market_open():
-    now = datetime.now(ist_timezone)
-    current_time = now.time()
+def get_market_summary():
+    # Aap jin bhi stocks ya indices ka data dekhna chahte hain yahan add kar sakte hain
+    tickers = {
+        'NIFTY 50': '^NSEI',
+        'BANK NIFTY': '^NSEBANK',
+        'RELIANCE': 'RELIANCE.NS',
+        'TCS': 'TCS.NS',
+        'INFY': 'INFY.NS'
+    }
     
-    # Market Hours: 09:15 AM se 03:30 PM IST
-    market_start = datetime.strptime("09:15:00", "%H:%M:%S").time()
-    market_end = datetime.strptime("15:30:00", "%H:%M:%S").time()
+    print("\n==========================================")
+    print("📊 TODAY'S MARKET SUMMARY")
+    print("==========================================\n")
     
-    return market_start <= current_time <= market_end
+    for name, symbol in tickers.items():
+        try:
+            ticker = yf.Ticker(symbol)
+            df = ticker.history(period="2d")
+            
+            if len(df) >= 2:
+                prev_close = df['Close'].iloc[-2]
+                curr_close = df['Close'].iloc[-1]
+                high = df['High'].iloc[-1]
+                low = df['Low'].iloc[-1]
+                open_price = df['Open'].iloc[-1]
+                
+                change = curr_close - prev_close
+                percent_change = (change / prev_close) * 100
+                
+                status = "🟢 GREEN" if change >= 0 else "🔴 RED"
+                
+                print(f"[{status}] {name}")
+                print(f"  • Close : {curr_close:.2f} ({change:+.2f}, {percent_change:+.2f}%)")
+                print(f"  • Open  : {open_price:.2f}")
+                print(f"  • High  : {high:.2f}")
+                print(f"  • Low   : {low:.2f}")
+                print("-" * 42)
+        except Exception as e:
+            print(f"Error fetching data for {name}: {e}")
 
-# --- Test Execution ---
 if __name__ == "__main__":
-    print("Script execution started...")
-    
-    if is_market_open():
-        print("Market is OPEN!")
-    else:
-        print("Market is CLOSED!")
-    
-    res = send_whatsapp("Test message: Trading Bot is Working!")
-    if res is not None:
-        print("Status Code:", res.status_code)
-        print("Response:", res.text)
+    get_market_summary()
