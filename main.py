@@ -15,3 +15,4 @@ def send_whatsapp(message):
         return response
     except Exception as e:
         print(f"WhatsApp Error: {e}")
+        send_whatsapp("Test message: Trading Bot is Working!")
